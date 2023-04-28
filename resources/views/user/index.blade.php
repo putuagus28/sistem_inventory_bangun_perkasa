@@ -114,6 +114,17 @@
                                     <input type="text" name="password" id="password" class="form-control">
                                 </div>
                             </div>
+                            <div class="w-100"></div>
+                            <div class="col-12 col-sm-6">
+                                <div class="form-group">
+                                    <label for="">Hak Akses</label>
+                                    <select name="role" id="role" class="form-control">
+                                        @foreach ($role as $item)
+                                            <option value="{{ $item }}">{{ $item }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -237,6 +248,7 @@
                         $('#modal form').find('#email').val(data.email);
                         $('#modal form').find('#alamat').val(data.alamat);
                         $('#modal form').find('#username').val(data.username);
+                        $('#modal form').find('#role').val(data.role).change();
                     },
                     error: function(response) {
                         Swal.fire({
@@ -249,6 +261,52 @@
 
                 });
             });
+
+            // deleted
+            table.on("click", "#delete", function(e) {
+                e.preventDefault();
+                var id = $(this).data('id');
+                Swal.fire({
+                    title: 'Yakin hapus ?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "{{ route('delete.user') }}",
+                            type: "POST",
+                            dataType: "JSON",
+                            cache: false,
+                            data: {
+                                'id': id,
+                                "_token": "{{ csrf_token() }}",
+                            },
+                            success: function(data) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Deleted!',
+                                });
+                                table.ajax.reload();
+                            },
+                            error: function(response) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Opps!',
+                                    text: 'server error!'
+                                });
+                                console.log(response);
+                                table.ajax.reload();
+                            }
+
+                        });
+
+                    }
+                })
+            });
+
             // tambah data
             var validator = $("#modalForm").validate({
                 rules: {

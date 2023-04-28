@@ -18,11 +18,14 @@ class RedirectIfAuthenticated
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        $akses = array("admin");
-
+        $akses = array("admin", "teknisi", "pelanggan", "owner");
         if (Auth::guard('user')->check()) {
-
             if (in_array(Auth::guard('user')->user()->role, $akses)) {
+                session()->flash('info', '<strong>Oppss</strong>, Silahkan logout terlebih dahulu !');
+                return redirect()->route('dashboard');
+            }
+        } elseif (Auth::guard('pelanggan')->check()) {
+            if (in_array(Auth::guard('pelanggan')->user()->role, ['pelanggan'])) {
                 session()->flash('info', '<strong>Oppss</strong>, Silahkan logout terlebih dahulu !');
                 return redirect()->route('dashboard');
             }

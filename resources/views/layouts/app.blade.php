@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-    <title>CV. ADITYA BANGUN PERKASA - @yield('title')</title>
+    <title>{{ strtoupper(config('app.name')) }} - @yield('title')</title>
     <link rel="shortcut icon" href="{{ asset('assets/dist/img/favicon-32x32.png') }}" type="image/x-icon">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="{{ asset('assets/plugins/fontawesome-free/css/all.min.css') }}">
@@ -19,7 +19,8 @@
     @yield('css')
 </head>
 
-<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed text-sm">
+<body
+    class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed text-sm {{ request()->is(['dashboard', 'service/*', 'service', 'laporan/*', 'laporan_keuangan/*']) ? 'sidebar-collapse' : '' }}">
     <div class="wrapper">
         <!-- Navbar -->
         @include('layouts.navbar')

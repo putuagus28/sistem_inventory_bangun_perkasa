@@ -3,7 +3,7 @@
     <a href="{{ url(auth()->user()->role == 'mahasiswa' ? 'setprivilege' : '') }}" class="brand-link bg-info">
         <img src="{{ asset('assets/dist/img/favicon-32x32.png') }}" alt="AdminLTE Logo"
             class="brand-image img-circle elevation-3" style="opacity: .8">
-        <span class="brand-text font-weight-bold">CV. ADITYA BANGUN PERKASA</span>
+        <span class="brand-text font-weight-bold">{{ config('app.name') }}</span>
     </a>
 
     <!-- Sidebar -->
@@ -20,7 +20,11 @@
             <div class="info">
                 <a href="#" class="d-block font-weight-bold">
                     @auth
-                        {{ strtoupper(auth()->user()->role == 'mahasiswa' ? auth()->user()->mhs->name : auth()->user()->name) }}
+                        @if (Auth::guard('user')->check())
+                            {{ auth()->user()->name }}
+                        @elseif(Auth::guard('pelanggan')->check())
+                            {{ auth()->user()->nama }}
+                        @endif
                     @endauth
                 </a>
                 <span class="badge badge-pill badge-info">
@@ -34,8 +38,7 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                 data-accordion="false">
                 <li class="nav-item has-treeview {{ request()->is('dashboard') ? 'menu-open' : '' }}">
-                    <a href="{{ route('dashboard') }}"
-                        class="nav-link {{ request()->is('dashboard') ? 'active' : '' }}">
+                    <a href="{{ url('dashboard') }}" class="nav-link {{ request()->is('dashboard') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>
                             Dashboard
@@ -43,8 +46,7 @@
                     </a>
                 </li>
                 @if (in_array(auth()->user()->role, ['admin']))
-                    <li
-                        class="nav-item {{ request()->is(['user', 'jenis', 'barang', 'customer', 'supplier']) ? 'menu-open' : '' }}">
+                    <li class="nav-item {{ request()->is(['master/*']) ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link {{ request()->is('laporan/*') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-file"></i>
                             <p>
@@ -54,54 +56,66 @@
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{{ route('user') }}"
-                                    class="nav-link {{ request()->is('user') ? 'active' : '' }}">
+                                <a href="{{ url('master/akun') }}"
+                                    class="nav-link {{ request()->is('master/akun') ? 'active' : '' }}">
                                     <i class="fa fa-angle-right nav-icon"></i>
-                                    <p>User</p>
+                                    <p>Data Akun</p>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('jenis') }}"
-                                    class="nav-link {{ request()->is('jenis') ? 'active' : '' }}">
+                                <a href="{{ url('master/pelanggan') }}"
+                                    class="nav-link {{ request()->is('master/pelanggan') ? 'active' : '' }}">
                                     <i class="fa fa-angle-right nav-icon"></i>
-                                    <p>Jenis Barang</p>
+                                    <p>Pelanggan</p>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('barang') }}"
-                                    class="nav-link {{ request()->is('barang') ? 'active' : '' }}">
+                                <a href="{{ url('master/jenisjasa') }}"
+                                    class="nav-link {{ request()->is('master/jenisjasa') ? 'active' : '' }}">
+                                    <i class="fa fa-angle-right nav-icon"></i>
+                                    <p>Jenis Jasa</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ url('master/barang') }}"
+                                    class="nav-link {{ request()->is('master/barang') ? 'active' : '' }}">
                                     <i class="fa fa-angle-right nav-icon"></i>
                                     <p>Barang</p>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('customer') }}"
-                                    class="nav-link {{ request()->is('customer') ? 'active' : '' }}">
+                                <a href="{{ url('master/user') }}"
+                                    class="nav-link {{ request()->is('master/user') ? 'active' : '' }}">
                                     <i class="fa fa-angle-right nav-icon"></i>
-                                    <p>Customer</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('supplier') }}"
-                                    class="nav-link {{ request()->is('supplier') ? 'active' : '' }}">
-                                    <i class="fa fa-angle-right nav-icon"></i>
-                                    <p>Supplier</p>
+                                    <p>User</p>
                                 </a>
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item has-treeview {{ request()->is('stokopname') ? 'menu-open' : '' }}">
-                        <a href="{{ route('stokopname') }}"
-                            class="nav-link {{ request()->is('stokopname') ? 'active' : '' }}">
-                            <i class="nav-icon fas fa-box-open"></i>
+
+
+                    <li class="nav-item has-treeview">
+                        <a href="{{ url('jurnal') }}" class="nav-link {{ request()->is('jurnal') ? 'active' : '' }}">
+                            <i class="nav-icon fa fa-book"></i>
                             <p>
-                                Stok Opname
+                                Jurnal Umum
                             </p>
                         </a>
                     </li>
+
+                    <li class="nav-item has-treeview {{ request()->is('service/data') ? 'menu-open' : '' }}">
+                        <a href="{{ url('service/data') }}"
+                            class="nav-link {{ request()->is('service/data') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-edit"></i>
+                            <p>
+                                Permintaan Service
+                            </p>
+                        </a>
+                    </li>
+                    {{-- transaksi --}}
                     <li class="nav-item {{ request()->is('transaksi/*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link {{ request()->is('transaksi/*') ? 'active' : '' }}">
-                            <i class="nav-icon fa fa-cart-plus"></i>
+                            <i class="nav-icon fa fa-edit"></i>
                             <p>
                                 Transaksi
                                 <i class="fas fa-angle-left right"></i>
@@ -109,62 +123,176 @@
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{{ route('transaksi.pembelian') }}"
-                                    class="nav-link {{ request()->is('transaksi/pembelian') ? 'active' : '' }}">
+                                <a href="{{ url('transaksi/pembayaran') }}"
+                                    class="nav-link {{ request()->is('transaksi/pembayaran') ? 'active' : '' }}">
                                     <i class="fa fa-angle-right nav-icon"></i>
-                                    <p>Pembelian</p>
+                                    <p>Pembayaran</p>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('transaksi.penjualan') }}"
-                                    class="nav-link {{ request()->is('transaksi/penjualan') ? 'active' : '' }}">
-                                    <i class="fa fa-angle-right nav-icon"></i>
-                                    <p>Penjualan</p>
-                                </a>
-                            </li>
-                            {{-- <li class="nav-item">
-                                <a href="{{ url('pengeluaran') }}"
+                                <a href="{{ url('transaksi/pengeluaran') }}"
                                     class="nav-link {{ request()->is('transaksi/pengeluaran') ? 'active' : '' }}">
                                     <i class="fa fa-angle-right nav-icon"></i>
-                                    <p>Purchase Order</p>
-                                </a>
-                            </li> --}}
-                        </ul>
-                    </li>
-
-                    <li class="nav-item {{ request()->is('laporan/*') ? 'menu-open' : '' }}">
-                        <a href="#" class="nav-link {{ request()->is('laporan/*') ? 'active' : '' }}">
-                            <i class="nav-icon fas fa-print"></i>
-                            <p>
-                                Laporan
-                                <i class="fas fa-angle-left right"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{{ url('laporan/pembelian') }}"
-                                    class="nav-link {{ request()->is('laporan/pembelian') ? 'active' : '' }}">
-                                    <i class="fa fa-angle-right nav-icon"></i>
-                                    <p>Pembelian</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ url('laporan/penjualan') }}"
-                                    class="nav-link {{ request()->is('laporan/penjualan') ? 'active' : '' }}">
-                                    <i class="fa fa-angle-right nav-icon"></i>
-                                    <p>Penjualan</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ url('laporan/stok') }}"
-                                    class="nav-link {{ request()->is('laporan/stok') ? 'active' : '' }}">
-                                    <i class="fa fa-angle-right nav-icon"></i>
-                                    <p>Stok</p>
+                                    <p>Pengeluaran</p>
                                 </a>
                             </li>
                         </ul>
                     </li>
                 @endif
+
+
+                @if (in_array(auth()->user()->role, ['admin', 'owner']))
+                    <li class="nav-item {{ request()->is('laporan/*') ? 'menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ request()->is('laporan/*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-print"></i>
+                            <p>
+                                Laporan Service
+                                <i class="fas fa-angle-left right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ url('laporan/service') }}"
+                                    class="nav-link {{ request()->is('laporan/service') ? 'active' : '' }}">
+                                    <i class="fa fa-angle-right nav-icon"></i>
+                                    <p>Data Service</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item {{ request()->is('laporan_keuangan/*') ? 'menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ request()->is('laporan_keuangan/*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-print"></i>
+                            <p>
+                                Laporan Keuangan
+                                <i class="fas fa-angle-left right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ url('laporan_keuangan/jurnal') }}"
+                                    class="nav-link {{ request()->is('laporan_keuangan/jurnal') ? 'active' : '' }}">
+                                    <i class="fa fa-angle-right nav-icon"></i>
+                                    <p>Laporan Jurnal Umum</p>
+                                </a>
+                            </li>
+                            {{-- <li class="nav-item">
+                                <a href="{{ url('laporan_keuangan/pemasukan') }}"
+                                    class="nav-link {{ request()->is('laporan_keuangan/pemasukan') ? 'active' : '' }}">
+                                    <i class="fa fa-angle-right nav-icon"></i>
+                                    <p>Laporan Pemasukan</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ url('laporan_keuangan/pengeluaran') }}"
+                                    class="nav-link {{ request()->is('laporan_keuangan/pengeluaran') ? 'active' : '' }}">
+                                    <i class="fa fa-angle-right nav-icon"></i>
+                                    <p>Laporan Pengeluaran</p>
+                                </a>
+                            </li> --}}
+                            <li class="nav-item">
+                                <a href="{{ url('laporan_keuangan/buku_besar') }}"
+                                    class="nav-link {{ request()->is('laporan_keuangan/buku_besar') ? 'active' : '' }}">
+                                    <i class="fa fa-angle-right nav-icon"></i>
+                                    <p>Laporan Buku Besar</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ url('laporan_keuangan/neraca_saldo') }}"
+                                    class="nav-link {{ request()->is('laporan_keuangan/neraca_saldo') ? 'active' : '' }}">
+                                    <i class="fa fa-angle-right nav-icon"></i>
+                                    <p>Laporan Neraca Saldo</p>
+                                </a>
+                            </li>
+                            {{-- <li class="nav-item">
+                                <a href="{{ url('laporan_keuangan/neraca') }}"
+                                    class="nav-link {{ request()->is('laporan_keuangan/neraca') ? 'active' : '' }}">
+                                    <i class="fa fa-angle-right nav-icon"></i>
+                                    <p>Laporan Neraca</p>
+                                </a>
+                            </li> --}}
+                            <li class="nav-item">
+                                <a href="{{ url('laporan_keuangan/labarugi') }}"
+                                    class="nav-link {{ request()->is('laporan_keuangan/labarugi') ? 'active' : '' }}">
+                                    <i class="fa fa-angle-right nav-icon"></i>
+                                    <p>Laporan Laba Rugi</p>
+                                </a>
+                            </li>
+                            {{-- <li class="nav-item">
+                                <a href="{{ url('laporan_keuangan/perubahan_modal') }}"
+                                    class="nav-link {{ request()->is('laporan_keuangan/perubahan_modal') ? 'active' : '' }}">
+                                    <i class="fa fa-angle-right nav-icon"></i>
+                                    <p>Laporan Perubahan Modal</p>
+                                </a>
+                            </li> --}}
+                            {{-- <li class="nav-item">
+                                <a href="{{ url('laporan_keuangan/jurnal_penutup') }}"
+                                    class="nav-link {{ request()->is('laporan_keuangan/jurnal_penutup') ? 'active' : '' }}">
+                                    <i class="fa fa-angle-right nav-icon"></i>
+                                    <p>Laporan Jurnal Penutup</p>
+                                </a>
+                            </li> --}}
+                            <li class="nav-item">
+                                <a href="{{ url('laporan_keuangan/arus_kas') }}"
+                                    class="nav-link {{ request()->is('laporan_keuangan/arus_kas') ? 'active' : '' }}">
+                                    <i class="fa fa-angle-right nav-icon"></i>
+                                    <p>Laporan Arus Kas</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endif
+
+                @if (in_array(auth()->user()->role, ['teknisi']))
+                    <li class="nav-item has-treeview {{ request()->is('service/data/open') ? 'menu-open' : '' }}">
+                        <a href="{{ url('service/data/open') }}"
+                            class="nav-link {{ request()->is('service/data/open') ? 'active' : '' }}">
+                            <i class="nav-icon fa fa-list-alt"></i>
+                            <p>
+                                Daftar Antrean Tiket
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item has-treeview {{ request()->is('service/data/close') ? 'menu-open' : '' }}">
+                        <a href="{{ url('service/data/close') }}"
+                            class="nav-link {{ request()->is('service/data/close') ? 'active' : '' }}">
+                            <i class="nav-icon fa fa-history"></i>
+                            <p>
+                                Riwayat Service
+                            </p>
+                        </a>
+                    </li>
+                @endif
+
+                @if (in_array(auth()->user()->role, ['pelanggan']))
+                    <li class="nav-item has-treeview {{ request()->is('service/data/open') ? 'menu-open' : '' }}">
+                        <a href="{{ url('service/data/open') }}"
+                            class="nav-link {{ request()->is('service/data/open') ? 'active' : '' }}">
+                            <i class="nav-icon fa fa-list-alt"></i>
+                            <p>
+                                Data Service
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item has-treeview {{ request()->is('service/data/close') ? 'menu-open' : '' }}">
+                        <a href="{{ url('service/data/close') }}"
+                            class="nav-link {{ request()->is('service/data/close') ? 'active' : '' }}">
+                            <i class="nav-icon fa fa-history"></i>
+                            <p>
+                                Riwayat Service
+                            </p>
+                        </a>
+                    </li>
+                @endif
+                {{-- <li class="nav-item has-treeview {{ request()->is('profile') ? 'menu-open' : '' }}">
+                    <a href="{{ url('profile') }}" class="nav-link active">
+                        <i class="nav-icon fas fa-key"></i>
+                        <p>
+                            Reset Password
+                        </p>
+                    </a>
+                </li> --}}
             </ul>
         </nav>
         <!-- /.sidebar-menu -->

@@ -21,77 +21,230 @@
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <style>
-        .login-page {
-            background-image: linear-gradient(to bottom, rgb(0 0 0 / 90%), hsl(0deg 0% 0% / 82%)), url(assets/dist/img/bg-1.jpeg);
-            background-size: cover;
-            background-position: center, right bottom;
-            background-repeat: no-repeat, no-repeat;
+        /* @import url('https://fonts.googleapis.com/css?family=Exo:400,700'); */
+
+        * {
+            margin: 0px;
+            padding: 0px;
         }
 
-        .login-box {
-            z-index: 9;
+        body {
+            font-family: 'Exo', sans-serif;
+        }
+
+
+        .context {
+            width: 100%;
+            position: absolute;
+            z-index: 100;
+        }
+
+        .area {
+            background: #2c3e50;
+            background: -webkit-linear-gradient(to left, #8f94fb, #4e54c8);
+            width: 100%;
+            height: 100vh;
+        }
+
+        .circles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .circles li {
+            position: absolute;
+            display: block;
+            list-style: none;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            animation: animate 25s linear infinite;
+            bottom: -150px;
+        }
+
+        .circles li:nth-child(1) {
+            left: 25%;
+            width: 80px;
+            height: 80px;
+            animation-delay: 0s;
+        }
+
+
+        .circles li:nth-child(2) {
+            left: 10%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 2s;
+            animation-duration: 12s;
+        }
+
+        .circles li:nth-child(3) {
+            left: 70%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 4s;
+        }
+
+        .circles li:nth-child(4) {
+            left: 40%;
+            width: 60px;
+            height: 60px;
+            animation-delay: 0s;
+            animation-duration: 18s;
+        }
+
+        .circles li:nth-child(5) {
+            left: 65%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 0s;
+        }
+
+        .circles li:nth-child(6) {
+            left: 75%;
+            width: 110px;
+            height: 110px;
+            animation-delay: 3s;
+        }
+
+        .circles li:nth-child(7) {
+            left: 35%;
+            width: 150px;
+            height: 150px;
+            animation-delay: 7s;
+        }
+
+        .circles li:nth-child(8) {
+            left: 50%;
+            width: 25px;
+            height: 25px;
+            animation-delay: 15s;
+            animation-duration: 45s;
+        }
+
+        .circles li:nth-child(9) {
+            left: 20%;
+            width: 15px;
+            height: 15px;
+            animation-delay: 2s;
+            animation-duration: 35s;
+        }
+
+        .circles li:nth-child(10) {
+            left: 85%;
+            width: 150px;
+            height: 150px;
+            animation-delay: 0s;
+            animation-duration: 11s;
+        }
+
+
+
+        @keyframes animate {
+
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+                border-radius: 0;
+            }
+
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+                opacity: 0;
+                border-radius: 50%;
+            }
+
+        }
+
+        .login-page {
+            background: #ffffff;
+        }
+
+        .text-info-light {
+            color: #2adffc;
         }
     </style>
 </head>
 
 <body class="hold-transition login-page">
-    <div class="login-box">
-        <div class="login-logo text-center">
-            <img src="{{ asset('assets/dist/img/logo.png') }}" class="img-fluid p-2 " width="100" alt="">
-            <h4 class="text-white mt-2 mb-4">
-                CV.
-                ADITYA
-                BANGUN PERKASA
-            </h4>
-        </div>
-        <!-- /.login-logo -->
-        @if (session('info'))
-            <div class="alert alert-danger">
-                <strong><i class="fas fa-exclamation-triangle"></i></strong>
-                {{ session('info') }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+    <div class="context">
+        <div class="login-box m-auto">
+            <div class="login-logo text-center">
+                <img src="{{ asset('assets/dist/img/logo.png') }}" class="img-fluid p-2 " width="100" alt="">
+                <h4 class="text-white mt-2 mb-4">
+                    Selamat Datang Di <br> Sistem E-Tiket
+                    {{ config('app.name') }}
+                </h4>
             </div>
-        @endif
-        <div class="card card-info">
-            <div class="card-header text-left">
-                <h5 class="m-0"><b>Login</b></h5>
-            </div>
-            <div class="card-body login-card-body">
+            <!-- /.login-logo -->
+            @if (session('info'))
+                <div class="alert alert-danger">
+                    <strong><i class="fas fa-exclamation-triangle"></i></strong>
+                    {{ session('info') }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            @endif
+            <div class="card card-dark">
+                <div class="card-header text-center">
+                    <h5 class="m-0"><b>Silahkan masuk terlebih dahulu</b></h5>
+                </div>
+                <div class="card-body login-card-body">
 
-                <form action="{{ route('login') }}" method="post">
-                    @csrf
-                    <div class="input-group mb-3">
-                        <input type="text" name="username" id="username" class="form-control"
-                            placeholder="Username or Email" value="" autofocus>
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-envelope"></span>
+                    <form action="{{ route('login') }}" method="post">
+                        @csrf
+                        <div class="input-group mb-3">
+                            <input type="text" name="username" id="username" class="form-control"
+                                placeholder="Username or Email" value="" autofocus>
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-envelope"></span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="input-group mb-3">
-                        <input type="password" name="password" id="password" class="form-control"
-                            placeholder="Password">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-lock"></span>
+                        <div class="input-group mb-3">
+                            <input type="password" name="password" id="password" class="form-control"
+                                placeholder="Password">
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-lock"></span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <!-- /.col -->
-                        <div class="col-4">
-                            <button type="submit" class="btn btn-info btn-block">
-                                LOGIN</button>
+                        <div class="row">
+                            <!-- /.col -->
+                            <div class="col-4 mx-auto">
+                                <button type="submit" class="btn btn-info btn-block">
+                                    Masuk
+                                </button>
+                            </div>
+                            <!-- /.col -->
                         </div>
-                        <!-- /.col -->
-                    </div>
-                </form>
+                    </form>
+                </div>
+                <!-- /.login-card-body -->
             </div>
-            <!-- /.login-card-body -->
         </div>
+    </div>
+
+    <div class="area">
+        <ul class="circles">
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
     </div>
     <!-- /.login-box -->
 

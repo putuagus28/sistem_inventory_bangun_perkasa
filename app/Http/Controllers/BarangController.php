@@ -14,37 +14,40 @@ class BarangController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = Barang::with('jenis')->get();
+            $data = Barang::with('users')->get();
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     $btn = "";
-                    $btn .= '<a href="javascript:void(0)" data-id="' . $row->id . '" class="btn btn-success btn-sm mx-1" id="edit"><i class="fas fa-edit"></i></a>';
+                    $btn .= '<a href="javascript:void(0)" data-id="' . $row->id . '" class="btn text-success btn-sm px-1" id="edit"><i class="fas fa-edit"></i></a>';
+                    $btn .= '<a href="javascript:void(0)" data-id="' . $row->id . '" class="btn text-danger btn-sm px-1" id="delete"><i class="fas fa-trash"></i></a>';
                     return $btn;
                 })
-                ->addColumn('harga', function ($row) {
-                    return 'Rp ' . number_format($row->harga, 0, ',', '.');
-                })
-                ->rawColumns(['action', 'harga'])
+                ->rawColumns(['action'])
                 ->make(true);
         }
         $data = [
             'title' => 'Data Barang',
-            'jenis' => Jenis::orderBy('nama_jenis', 'asc')->get(),
         ];
         return view('barang.index', $data);
     }
 
-    public function insert(Request $request)
+
+    public function submit(Request $req)
     {
         try {
-            $q = new Barang;
-            $q->jenis_id = $request->jenis_id;
-            $q->nama_barang = $request->nama_barang;
-            $q->ukuran = $request->ukuran;
-            $q->satuan = $request->satuan;
-            $q->harga = $request->harga;
-            $q->jumlah = $request->jumlah;
+            if (empty($req->id)) {
+                $q = new Barang;
+                $q->kode = $req->kode;
+                $q->users_id = auth()->user()->id;
+            } else {
+                $q = Barang::find($req->id);
+            }
+            $q->kode_barang = $req->kode_barang;
+            $q->nama = $req->nama;
+            $q->kategori = $req->kategori;
+            $q->jml = $req->jml;
+            $q->harga = str_replace(["Rp", " ", ",", "."], "", trim($req->harga));
             $q->save();
             return response()->json(['status' => true, 'message' => 'Sukses']);
         } catch (\Exception $err) {
@@ -61,35 +64,11 @@ class BarangController extends Controller
     public function delete(Request $request)
     {
         $query = Barang::find($request->id);
-        $foto = $query->foto;
         $del = $query->delete();
         if ($del) {
-            if ($foto != "") {
-                $filePath = 'barang/' . $foto;
-                if (file_exists($filePath)) {
-                    unlink($filePath);
-                }
-            }
             return response()->json(['status' => $del, 'message' => 'Hapus Sukses']);
         } else {
             return response()->json(['status' => $del, 'message' => 'Gagal']);
-        }
-    }
-
-    public function update(Request $request)
-    {
-        try {
-            $q = Barang::find($request->id);
-            $q->jenis_id = $request->jenis_id;
-            $q->nama_barang = $request->nama_barang;
-            $q->ukuran = $request->ukuran;
-            $q->satuan = $request->satuan;
-            $q->harga = $request->harga;
-            $q->jumlah = $request->jumlah;
-            $q->save();
-            return response()->json(['status' => true, 'message' => 'Sukses']);
-        } catch (\Exception $err) {
-            return response()->json(['status' => false, 'message' => $err->getMessage()]);
         }
     }
 }

@@ -47,10 +47,10 @@ return [
             'hash' => false,
         ],
 
-        // 'pegawai' => [
-        //     'driver' => 'session',
-        //     'provider' => 'pegawais',
-        // ],
+        'pelanggan' => [
+            'driver' => 'session',
+            'provider' => 'pelanggans',
+        ],
 
         // 'nasabah' => [
         //     'driver' => 'session',
@@ -86,10 +86,10 @@ return [
             'model' => App\User::class,
         ],
 
-        // 'pegawais' => [
-        //     'driver' => 'eloquent',
-        //     'model' => App\Pegawai::class,
-        // ],
+        'pelanggans' => [
+            'driver' => 'eloquent',
+            'model' => App\Pelanggan::class,
+        ],
 
         // 'nasabahs' => [
         //     'driver' => 'eloquent',
@@ -119,11 +119,11 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
-        // 'pegawai' => [
-        //     'provider' => 'pegawais',
-        //     'table' => 'password_resets',
-        //     'expire' => 60,
-        // ],
+        'pelanggans' => [
+            'provider' => 'pelanggans',
+            'table' => 'password_resets',
+            'expire' => 60,
+        ],
         // 'nasabah' => [
         //     'provider' => 'nasabahs',
         //     'table' => 'password_resets',

@@ -11,18 +11,8 @@ class Barang extends Model
     use \App\Traits\TraitUuid;
     protected $table = 'barangs';
 
-    public function jenis()
+    public function users()
     {
-        return $this->belongsTo(Jenis::class);
-    }
-
-    public function d_penjualan()
-    {
-        return $this->hasMany(DetailPenjualan::class, 'barangs_id', 'id');
-    }
-
-    public function d_pembelian()
-    {
-        return $this->hasMany(DetailPembelian::class, 'barangs_id', 'id');
+        return $this->belongsTo(User::class, 'users_id', 'id');
     }
 }

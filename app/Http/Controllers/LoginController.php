@@ -37,6 +37,12 @@ class LoginController extends Controller
                 'role' => auth()->guard('user')->user()->role,
                 'message' => 'Login Sukses!'
             ]);
+        } else if (Auth::guard('pelanggan')->attempt($login)) {
+            return response()->json([
+                'success' => true,
+                'role' => auth()->guard('pelanggan')->user()->role,
+                'message' => 'Login Sukses!'
+            ]);
         } else {
             return response()->json([
                 'success' => false,
@@ -47,8 +53,9 @@ class LoginController extends Controller
 
     public function logout()
     {
-        if (Auth::guard('user')->check()) {
+        if (Auth::guard('user')->check() || Auth::guard('pelanggan')->check()) {
             Auth::guard('user')->logout();
+            Auth::guard('pelanggan')->logout();
             Session::flush();
             return redirect()->route('login');
         }
